@@ -1,0 +1,44 @@
+<nav class="navbar navbar-expand-md bg-dark navbar-dark">
+  <a class="navbar-brand" href="#">Các tác vụ</a>
+
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#collapsibleNavbar">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+
+  <div class="collapse navbar-collapse" id="collapsibleNavbar">
+    <ul class="navbar-nav nav">
+      <li class="nav-item">
+        <a class="nav-link" href="/">Trang chủ</a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="{{ url_for('dang_ky_kham') }}">Đăng ký khám</a>
+      </li>
+      <li class="nav-item">
+          <a class="nav-link" href="{{ url_for('danh_sach_kham') }}">Danh sách khám</a>
+      </li>
+
+      {% if current_user.is_authenticated %}
+        <li class="nav-item">
+          <a class="nav-link text-success" href="{{ url_for('home') }}">
+            {% if current_user.avatar.startswith("https") %}
+              <img src="{{ current_user.avatar }}" alt="{{ current_user.username }}" width="30" class="rounded-circle"/>
+            {% else %}
+              <img src="{{ url_for('static', filename=current_user.avatar)}}" alt="{{ current_user.username }}" width="30" class="rounded-circle"/>
+            {% endif %}
+            {{ current_user.username }}
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-danger" href="{{ url_for('logout') }}">Đăng xuất</a>
+        </li>
+        {% else %}
+        <li class="nav-item">
+          <a class="nav-link text-danger" href="{{ url_for('register') }}">Đăng ký</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-success" href="{{ url_for('login') }}">Đăng nhập</a>
+        </li>
+      {% endif %}
+    </ul>
+  </div>
+</nav>

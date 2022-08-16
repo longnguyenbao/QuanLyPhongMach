@@ -1,0 +1,100 @@
+{% extends "layout/base.html" %}
+
+{% block title %} Lập phiếu khám {% endblock %}
+
+{% block content %}
+<h1 class="text-center text-info">LẬP PHIẾU KHÁM</h1>
+
+{% if err_msg %}
+    <div class="alert alert-danger">
+        {{ err_msg }}
+    </div>
+{% endif %}
+
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+{% if current_user.is_authenticated %}
+    <form method="post" action="{{ url_for('lap_phieu_kham', benh_nhan_ngay_kham_id=thong_tin_benh_nhan_ngay_kham[4]) }}" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="ten-benh-nhan">Tên bệnh nhân</label>
+            <input type="text" value="{{ thong_tin_benh_nhan_ngay_kham[0] }}" class="form-control disabled" id="ten-benh-nhan" name="ten-benh-nhan" disabled/>
+        </div>
+        <div class="form-group">
+            <label for="ngay-kham">Ngày khám</label>
+            <input type="date" value="{{ thong_tin_benh_nhan_ngay_kham[5].strftime('%Y-%m-%d') }}" class="form-control disabled" id="ngay-kham" name="ngay-kham" disabled/>
+        </div>
+
+        <div class="form-group">
+            <input type="button" value="Thêm bệnh" class="btn btn-success" onclick="ThemTrieuChungLoaiBenh()"/>
+        </div>
+
+        <table class="table">
+            <tr>
+                <th>Triệu chứng</th>
+                <th>Dự đoán loại bệnh</th>
+                <th></th>
+            </tr>
+            <tr>
+                <td>
+                    <input type="text" class="form-control" name="trieu-chung" required/>
+                </td>
+                <td>
+                    <input type="text" class="form-control" name="loai-benh" required/>
+                </td>
+                <td>
+                    <input type="button" value="Xóa" class="btn btn-danger" onclick="XoaDong(this)"/>
+                </td>
+            </tr>
+        </table>
+
+        <div class="form-group">
+            <input type="button" value="Thêm thuốc" class="btn btn-success" onclick="ThemThuoc()"/>
+        </div>
+
+        <table class="table">
+            <tr>
+                <th>Thuốc</th>
+                <th>Đơn vị</th>
+                <th>Số lượng</th>
+                <th>Cách dùng</th>
+                <th></th>
+            </tr>
+            <tr>
+                <td>
+                    <input type="text" class="form-control" name="thuoc" required/>
+                </td>
+                <td>
+                    <select class="form-control" name="don-vi" required>
+                        <option value="Viên" selected>Viên</option>
+                        <option value="Chai">Chai</option>
+                    </select>
+                </td>
+                <td>
+                    <input type="number" class="form-control" name="so-luong" required/>
+                </td>
+                <td>
+                    <input type="text" class="form-control" name="cach-dung" required/>
+                </td>
+                <td>
+                    <input type="button" value="Xóa" class="btn btn-danger" onclick="XoaDong(this)"/>
+                </td>
+            </tr>
+        </table>
+
+        <input type="submit" value="Lưu phiếu khám" class="btn btn-info" />
+
+    </form>
+{% else %}
+    <a href="{{ url_for('login') }}">Vui lòng đăng nhập để xem</a>
+{% endif %}
+<br/><br/>
+
+{% endblock %}

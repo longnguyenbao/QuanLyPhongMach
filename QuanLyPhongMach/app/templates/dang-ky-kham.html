@@ -1,0 +1,72 @@
+{% extends "layout/base.html" %}
+
+{% block title %} Đăng ký khám {% endblock %}
+
+{% block content %}
+<h1 class="text-center text-info">ĐĂNG KÝ KHÁM</h1>
+
+{% if err_msg %}
+    <div class="alert alert-danger">
+        {{ err_msg }}
+    </div>
+{% endif %}
+
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+<form method="post" action="{{ url_for('dang_ky_kham') }}" enctype="multipart/form-data">
+    <div class="form-group">
+        <label for="ngay-kham">Ngày khám</label>
+        <input value="{{ ngay_kham }}" type="date" class="form-control" id="ngay-kham" name="ngay-kham" required/>
+    </div>
+
+    <div class="form-group">
+        <input type="button" value="Thêm bệnh nhân" class="btn btn-success" onclick="ThemBenhNhan()"/>
+    </div>
+
+    <table class="table">
+        <tr>
+            <th>Họ tên</th>
+            <th>Giới tính</th>
+            <th>Năm sinh</th>
+            <th>Địa chỉ</th>
+            <th></th>
+        </tr>
+        <tr>
+            <td>
+                <input type="text" class="form-control" name="ho-ten" required/>
+            </td>
+            <td>
+                <select class="form-control" name="gioi-tinh" required>
+                    <option value="Nam" selected>Nam</option>
+                    <option value="Nữ">Nữ</option>
+                </select>
+            </td>
+            <td>
+                <input type="number" class="form-control" name="nam-sinh" required/>
+            </td>
+            <td>
+                <input type="text" class="form-control" name="dia-chi" required/>
+            </td>
+            <td>
+                <input type="button" value="Xóa" class="btn btn-danger" onclick="XoaDong(this)"/>
+            </td>
+        </tr>
+    </table>
+
+    {% if current_user.is_authenticated %}
+        <input type="submit" value="Đăng ký khám" class="btn btn-info" />
+    {% else %}
+        <a href="{{ url_for('login', next='dang_ky_kham') }}">Vui lòng đăng nhập để đăng ký</a>
+    {% endif %}
+</form>
+<br><br>
+
+{% endblock %}

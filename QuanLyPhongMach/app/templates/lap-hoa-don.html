@@ -1,0 +1,53 @@
+{% extends "layout/base.html" %}
+
+{% block title %} lập hóa đơn {% endblock %}
+
+{% block content %}
+<h1 class="text-center text-info">LẬP HÓA ĐƠN</h1>
+
+{% if err_msg %}
+    <div class="alert alert-danger">
+        {{ err_msg }}
+    </div>
+{% endif %}
+
+{% with messages = get_flashed_messages() %}
+    {% if messages %}
+        {% for message in messages %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+    {% endif %}
+{% endwith %}
+
+{% if current_user.is_authenticated %}
+    <form method="post" action="{{ url_for('lap_hoa_don', benh_nhan_ngay_kham_id=thong_tin_benh_nhan_ngay_kham[4]) }}" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="ten-benh-nhan">Tên bệnh nhân</label>
+            <input type="text" value="{{ thong_tin_benh_nhan_ngay_kham[0] }}" class="form-control" id="ten-benh-nhan" name="ten-benh-nhan" disabled/>
+        </div>
+        <div class="form-group">
+            <label for="ngay-kham">Ngày khám</label>
+            <input type="date" value="{{ thong_tin_benh_nhan_ngay_kham[5].strftime('%Y-%m-%d') }}" class="form-control" id="ngay-kham" name="ngay-kham" disabled/>
+        </div>
+
+        <div class="form-group">
+            <label for="tien-kham">Tiền khám</label>
+            <input type="number" value="{{ tien_kham }}" class="form-control" id="tien-kham" name="tien-kham" readonly/>
+        </div>
+
+        <div class="form-group">
+            <label for="tien-thuoc">Tiền thuốc</label>
+            <input type="number" class="form-control disabled" id="tien-thuoc" name="tien-thuoc"/>
+        </div>
+
+        <input type="submit" value="Lập hóa đơn" class="btn btn-info" />
+        <br/><br/>
+
+    </form>
+{% else %}
+    <a href="{{ url_for('login') }}">Vui lòng đăng nhập để xem</a>
+{% endif %}
+
+{% endblock %}

@@ -1,0 +1,69 @@
+{% extends "layout/base.html" %}
+
+{% block title %} Danh sách khám {% endblock %}
+
+{% block content %}
+<h1 class="text-center text-info">DANH SÁCH KHÁM</h1>
+
+{% if current_user.is_authenticated %}
+    <form method="post" action="{{ url_for('danh_sach_kham') }}" enctype="multipart/form-data">
+        <div class="form-group">
+            <label for="ngay-kham">Ngày khám</label>
+            <input value="{{ ngay_kham }}" type="date" class="form-control" id="ngay-kham" name="ngay-kham" required/>
+        </div>
+        <input type="submit" value="Xem danh sách" class="btn btn-info" />
+        <br/><br/>
+    </form>
+    {% if danh_sach %}
+        <table class="table">
+        <tr>
+            <th>Họ tên</th>
+            <th>Giới tính</th>
+            <th>Năm sinh</th>
+            <th>Địa chỉ</th>
+            <th>Tình trạng</th>
+            <th></th>
+            <th></th>
+        </tr>
+        {% for ds, t in danh_sach %}
+        <tr id="ds{{ ds[4] }}">
+            <td>{{ ds[0] }}</td>
+            <td>{{ ds[1] }}</td>
+            <td>{{ ds[2] }}</td>
+            <td>{{ ds[3] }}</td>
+            {% if t %}
+                <td>Đã lập phiếu khám</td>
+                <td>
+                    <a class="btn btn-info" href="#">Lập phiếu khám</a>
+                </td>
+                <td>
+                    <a class="btn btn-info" href="{{ url_for('chi_tiet_phieu_kham', benh_nhan_ngay_kham_id=ds[4]) }}">Chi tiết phiếu khám</a>
+                </td>
+            {% else %}
+                <td>Chưa lập phiếu khám</td>
+                <td>
+                    <a class="btn btn-info" href="{{ url_for('lap_phieu_kham', benh_nhan_ngay_kham_id=ds[4]) }}">Lập phiếu khám</a>
+                </td>
+                <td>
+                    <a class="btn btn-info" href="#">Chi tiết phiếu khám</a>
+                </td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+        </table>
+
+        {% if pages > 1 %}
+            <ul class="pagination">
+                {% for i in range(1, pages + 1) %}
+                <li class="page-item"><a class="page-link" href="{{ url_for('danh_sach_kham', page=i, ngay=ngay_kham) }}">{{ i }}</a></li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    {% else %}
+        <p><i>Không có bệnh nhân nào!!!</i></p>
+    {% endif %}
+{% else %}
+    <a href="{{ url_for('login', next='danh_sach_kham') }}">Vui lòng đăng nhập để xem</a>
+{% endif %}
+
+{% endblock %}

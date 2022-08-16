@@ -1,0 +1,10 @@
+{% extends "layout/base.html" %}
+
+{% block title %} Trang chu {% endblock %}
+
+{% block content %}
+<h1 class="text-center text-danger">CHÀO MỪNG ĐẾN VỚI PHÒNG KHÁM</h1>
+    {% if so_benh_nhan %}
+        <h2 class="text-center">Mỗi ngày khám tối đa {{ so_benh_nhan }} bệnh nhân</h2>
+    {% endif %}
+{% endblock %}

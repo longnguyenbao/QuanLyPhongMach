@@ -1,0 +1,158 @@
+{% extends 'admin/master.html' %}
+
+{% block body %}
+<h1 class="text-center text-info">THỐNG KÊ BÁO CÁO</h1>
+
+<form>
+    <div class="form-group">
+        <label for="thang-thong-ke">Chọn tháng thống kê</label>
+        <input value="{{ thang_thong_ke }}" type="month" class="form-control" id="thang-thong-ke" name="thang-thong-ke"/>
+    </div>
+    <input type="submit" class="btn btn-primary" value="Thống kê"/>
+</form>
+<br/><br/>
+
+<div class="row">
+    <div class="col-md-5 col-xs-12">
+        <table class="table">
+            <tr>
+                <td>Ngày</td>
+                <td>Số bệnh nhân</td>
+                <td>Doanh thu</td>
+                <td>Tỷ lệ</td>
+            </tr>
+            {% for tkdt in thong_ke_doanh_thu %}
+            <tr>
+                <td>{{ tkdt[0] }}</td>
+                <td>{{ tkdt[1] }}</td>
+                {% if tkdt[2] %}
+                    <td>
+                        {{ tkdt[2] }} VND
+                    </td>
+                    <td>
+                        {{ (tkdt[2]/tong_doanh_thu)*100 }} %
+                    </td>
+                {% else %}
+                    <td>
+                        0.0 VND
+                    </td>
+                    <td>
+                        0.0 %
+                    </td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </table>
+        <h5>
+            Tổng doanh thu:
+            {% if tong_doanh_thu %}
+                {{tong_doanh_thu}} VND
+            {% else %}
+                0 VND
+            {% endif %}
+        </h5>
+    </div>
+    <div class="col-md-7 col-xs-12">
+        <canvas id="doanhThuChart"></canvas>
+    </div>
+</div>
+<br/><br/>
+
+<div class="row">
+    <div class="col-md-5 col-xs-12">
+        <table class="table">
+            <tr>
+                <td>Thuốc</td>
+                <td>Đơn vị tính</td>
+                <td>Số lượng</td>
+                <td>Số lần dùng</td>
+            </tr>
+            {% for tksdt in thong_ke_su_dung_thuoc %}
+            <tr>
+                <td>{{ tksdt[0] }}</td>
+                <td>{{ tksdt[1] }}</td>
+                <td>
+                    {% if tksdt[2] %}
+                        {{tksdt[2]}}
+                    {% else %}
+                        0
+                    {% endif %}
+                </td>
+                <td>
+                    {% if tksdt[3] %}
+                        {{tksdt[3]}}
+                    {% else %}
+                        0
+                    {% endif %}
+                </td>
+            </tr>
+            {% endfor %}
+        </table>
+
+    </div>
+    <div class="col-md-7 col-xs-12">
+        <canvas id="suDungThuocChart"></canvas>
+    </div>
+</div>
+<br/><br/>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<script>
+    let labels=[], data=[], labels2=[], data2=[]
+    {% for tkdt in thong_ke_doanh_thu %}
+        {% if tkdt[2] %}
+            labels.push("{{ tkdt[3] }}")
+            data.push({{ tkdt[2] }})
+        {% endif %}
+    {% endfor %}
+
+    {% for tksdt in thong_ke_su_dung_thuoc %}
+        {% if tksdt[3] %}
+            labels2.push("{{ tksdt[0] }}")
+            data2.push({{ tksdt[3] }})
+        {% endif %}
+    {% endfor %}
+
+    window.onload = function() {
+        let ctx = document.getElementById("doanhThuChart").getContext("2d")
+        showChart(ctx, labels, data, "bar")
+
+        let ctx2 = document.getElementById("suDungThuocChart").getContext("2d")
+        showChart(ctx2, labels2, data2, "bar")
+    }
+
+    function showChart(ctx, labels, data, type) {
+        let colors=[], borderColors=[]
+        let r, g, b
+        for (let i = 0; i < labels.length; i++) {
+            r = parseInt(Math.random()*255)
+            g = parseInt(Math.random()*255)
+            b = parseInt(Math.random()*255)
+            colors.push(`rgba(${r}, ${g}, ${b}, 0.8)`)
+            borderColors.push(`rgba(${r}, ${g}, ${b}, 1)`)
+        }
+
+        const myChart = new Chart(ctx, {
+        type: type,
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Thống kê',
+                data: data,
+                backgroundColor: colors,
+                borderColor: borderColors,
+                borderWidth: 1
+            }]
+        },
+        options: {
+            scales: {
+                y: {
+                    beginAtZero: true
+                }
+            }
+          }
+        });
+    }
+</script>
+
+{% endblock %}
